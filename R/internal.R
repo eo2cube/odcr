@@ -23,8 +23,22 @@ quiet <- function(expr){
     } else{message(paste0(sign,input))}}}}
 }
 
-#' @importFrom sf st_as_sf st_crs
-#' @importFrom stars st_as_stars
+# translate measurements
+#' @keywords internal
+#' @noRd
+.translate_measurements <- function(x, dc_measurements){
+  sapply(x, function(.x){
+    if(any(grepl(tolower(.x), tolower(dc_measurements$name)))){
+      return(.x)
+    }else{
+      #sapply(tolower(dc_measurements$aliases), function(y) , simplify = F, USE.NAMES = F)
+      dc_measurements$name[sapply(dc_measurements$aliases, function(y) any(sapply(y, function(.y) .x == .y)))]
+    }
+  }, simplify = F, USE.NAMES = F)
+}
+
+#' @importFrom sf st_crs st_set_crs
+#' @importFrom stars read_stars st_set_dimensions
 #'
 #' @keywords internal
 #' @noRd
@@ -34,33 +48,73 @@ quiet <- function(expr){
     .out("'ds' must be of class 'xarray...'.", type = 3)
   }
 
-  # DELTE time$attrs$units first #hereistopped
+  # delete ncdf conflicting attribute
+  try(ds$time$attrs$units <- NULL, silent = T)
 
   # write ds to ncdf
   ds$to_netcdf(path = filename, format = "NETCDF4")
 
   # load values from xarray
   if(method == "stars"){
-
     x <- read_stars(filename)
-
-    # as_stars with the bbox method
-    bbox <- st_as_sf(data.frame(x = range(x$x$values), y = range(x$y$values)), coords = c("x", "y"))
-    st_crs(bbox) <- crs
-    st_as_stars(st_bbox(bbox), nx = dim(v)[1], ny = dim(v)[2], n = dim(v)[1]*dim(v)[2], values = v)
-  }
-
-
-  # load values from xarray
-  if(method == "stars_mem"){
-    v <- x$values
-
-    # as_stars with the bbox method
-    bbox <- st_as_sf(data.frame(x = range(x$x$values), y = range(x$y$values)), coords = c("x", "y"))
-    st_crs(bbox) <- crs
-    st_as_stars(st_bbox(bbox), nx = dim(v)[1], ny = dim(v)[2], n = dim(v)[1]*dim(v)[2], values = v)
+    x <- st_set_crs(x, crs)
+    st_set_dimensions(x, "band", names = "time")
   }
 }
+
+
+#' @keywords internal
+#' @noRd
+.dc_find_datasets <- function(dc, query){
+
+  if(!any(grepl("datacube.api.core.Datacube", class(dc)))){
+    .out("'dc' must be of class 'datacube...'.", type = 3)
+  }
+
+  # translate measurements for this dc
+  if(!is.null(query$measurements)){
+    dc_measurements <- dc$list_measurements()
+    query$measurements <- unlist(.translate_measurements(query$measurements, dc_measurements))
+  }
+
+  # query datasets
+  ds_list <- do.call(dc$find_datasets, query)
+  ds_paths <- as.data.frame(t(sapply(ds_list, function(x){
+    paths <- sapply(x$measurements, function(y) y$path)
+
+    if(!is.null(query$measurements)){
+      return(paths[query$measurements])
+    } else{
+      return(paths)
+    }
+  })))
+
+  return(ds_paths)
+}
+
+
+#' @importFrom sf st_crs st_set_crs
+#' @importFrom stars read_stars st_set_dimensions
+#'
+#' @keywords internal
+#' @noRd
+.dc_query <- function(dc, query, method = "stars"){
+
+  if(!any(grepl("datacube.api.core.Datacube", class(dc)))){
+    .out("'dc' must be of class 'datacube...'.", type = 3)
+  }
+
+  # get paths
+  ds_paths <- .dc_find_datasets(dc, query)
+
+  # load values from xarray
+  if(method == "stars"){
+    x <- read_stars(filename)
+    x <- st_set_crs(x, crs)
+    st_set_dimensions(x, "band", names = "time")
+  }
+}
+
 
 # global reference to datacube
 datacube <- NULL
@@ -68,4 +122,5 @@ datacube <- NULL
 .onLoad <- function(libname, pkgname) {
   # use superassignment to update global reference to scipy
   datacube <<- reticulate::import("datacube", delay_load = TRUE)
+
 }
