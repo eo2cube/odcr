@@ -9,7 +9,6 @@ Authors@R: person("Jakob", "Schwalb-Willmann", email = "dev@schwalb-willmann.de"
 Description: An R interface to the Open Data Cube.
 License: GPL-3
 Encoding: UTF-8
-Imports:
-  reticulate
+Imports: reticulate
 BugReports: https://github.com/16eagle/odcr/issues
 RoxygenNote: 7.1.1

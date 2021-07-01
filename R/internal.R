@@ -15,7 +15,7 @@ quiet <- function(expr){
 #'
 #' @keywords internal
 #' @noRd
-.out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = getOption("odcr.verbose")){
+out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = getOption("odcr.verbose")){
   if(is.null(ll)) if(isTRUE(verbose)) ll <- 1 else ll <- 2
   if(type == 2 & ll <= 2){warning(paste0(sign,input), call. = FALSE, immediate. = TRUE)}
   else{if(type == 3){stop(input, call. = FALSE)}else{if(ll == 1){
@@ -23,7 +23,7 @@ quiet <- function(expr){
     } else{message(paste0(sign,input))}}}}
 }
 
-# translate measurements
+# translate measurements vector
 #' @keywords internal
 #' @noRd
 .translate_measurements <- function(x, dc_measurements){
@@ -37,15 +37,23 @@ quiet <- function(expr){
   }, simplify = F, USE.NAMES = F)
 }
 
+# get measurements from dataset
+#' @keywords internal
+#' @noRd
+.get_measurements <- function(ds){
+  unlist(lapply(tail(strsplit(as.character(ds$data_vars), ".\n")[[1]], n=-1), function(x) trimws(strsplit(x, "\\(")[[1]][1])))
+}
+
+
 #' @importFrom sf st_crs st_set_crs
 #' @importFrom stars read_stars st_set_dimensions
 #'
 #' @keywords internal
 #' @noRd
-.xarray_convert <- function(ds, crs, filename = tempfile(fileext = ".ncdf"), method = "stars"){
+.xarray_convert <- function(ds, filename = tempfile(fileext = ".ncdf"), method = "stars"){
 
   if(!any(grepl("xarray", class(ds)))){
-    .out("'ds' must be of class 'xarray...'.", type = 3)
+    out("'ds' must be of class 'xarray...'.", type = 3)
   }
 
   # delete ncdf conflicting attribute
@@ -56,9 +64,11 @@ quiet <- function(expr){
 
   # load values from xarray
   if(method == "stars"){
-    x <- read_stars(filename)
-    x <- st_set_crs(x, crs)
-    st_set_dimensions(x, "band", names = "time")
+    x <- read_stars(filename, quiet = T)
+    x <- st_set_crs(x, as.numeric(ds$spatial_ref$values)) # THIS MIGHT BE BREAKING IF THERE IS NO EPSG VALUE AS CRS!
+    x <- st_set_dimensions(x, "band", names = "time")
+    #names(x) <- gsub("X..", "", names(x))
+    return(x)
   }
 }
 
@@ -68,7 +78,7 @@ quiet <- function(expr){
 .dc_find_datasets <- function(dc, query){
 
   if(!any(grepl("datacube.api.core.Datacube", class(dc)))){
-    .out("'dc' must be of class 'datacube...'.", type = 3)
+    out("'dc' must be of class 'datacube...'.", type = 3)
   }
 
   # translate measurements for this dc
@@ -98,29 +108,45 @@ quiet <- function(expr){
 #'
 #' @keywords internal
 #' @noRd
-.dc_query <- function(dc, query, method = "stars"){
+.dc_query <- function(dc, query, method = "find_datasets", return_class = "stars"){
 
   if(!any(grepl("datacube.api.core.Datacube", class(dc)))){
-    .out("'dc' must be of class 'datacube...'.", type = 3)
+    out("'dc' must be of class 'datacube...'.", type = 3)
   }
 
-  # get paths
-  ds_paths <- .dc_find_datasets(dc, query)
+  # load: query and subsetting done by datacube
+  if(method == "load"){
+    ds <- do.call(dc$load, query)
 
-  # load values from xarray
-  if(method == "stars"){
-    x <- read_stars(filename)
-    x <- st_set_crs(x, crs)
-    st_set_dimensions(x, "band", names = "time")
+    # return xarray python object
+    if(return_class == "xarray"){
+      return(ds)
+    }
+
+    # return converted stars object
+    if(return_class == "stars"){
+      .xarray_convert(ds)
+    }
+  }
+
+  # find_datasets: create a proxy/vrt stack instead of loading
+  if(method == "find_datasets"){
+
+    # get paths
+    .dc_find_datasets(dc, query)
+
+    ###### ADD METHOD TO DEAL WITH PATHS HERE #######
+
   }
 }
 
-
 # global reference to datacube
 datacube <- NULL
+np <- NULL
 
 .onLoad <- function(libname, pkgname) {
   # use superassignment to update global reference to scipy
   datacube <<- reticulate::import("datacube", delay_load = TRUE)
+  np <<- reticulate::import("numpy", delay_load = TRUE)
 
 }
