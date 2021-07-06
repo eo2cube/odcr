@@ -23,6 +23,26 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
     } else{message(paste0(sign,input))}}}}
 }
 
+#' @keywords internal
+#' @noRd
+.check_class <- function(x, name, class_str){
+  if(!any(grepl(class_str, class(x)))){
+    out(paste0("'", name, "' must be of class '", class_str, "'..."), type = 3)
+  }
+}
+
+#' @keywords internal
+#' @noRd
+.transform_query <- function(dc, query){
+
+  # translate measurements for this dc
+  if(!is.null(query$measurements)){
+    dc_measurements <- dc$list_measurements()
+    query$measurements <- unlist(.translate_measurements(query$measurements, dc_measurements))
+  }
+  return(query)
+}
+
 # translate measurements vector
 #' @keywords internal
 #' @noRd
@@ -72,73 +92,42 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   }
 }
 
-
-#' @keywords internal
-#' @noRd
-.dc_find_datasets <- function(dc, query){
-
-  if(!any(grepl("datacube.api.core.Datacube", class(dc)))){
-    out("'dc' must be of class 'datacube...'.", type = 3)
-  }
-
-  # translate measurements for this dc
-  if(!is.null(query$measurements)){
-    dc_measurements <- dc$list_measurements()
-    query$measurements <- unlist(.translate_measurements(query$measurements, dc_measurements))
-  }
-
-  # query datasets
-  ds_list <- do.call(dc$find_datasets, query)
-  ds_paths <- as.data.frame(t(sapply(ds_list, function(x){
-    paths <- sapply(x$measurements, function(y) y$path)
-
-    if(!is.null(query$measurements)){
-      return(paths[query$measurements])
-    } else{
-      return(paths)
-    }
-  })))
-
-  return(ds_paths)
-}
-
-
-#' @importFrom sf st_crs st_set_crs
-#' @importFrom stars read_stars st_set_dimensions
-#'
-#' @keywords internal
-#' @noRd
-.dc_query <- function(dc, query, method = "find_datasets", return_class = "stars"){
-
-  if(!any(grepl("datacube.api.core.Datacube", class(dc)))){
-    out("'dc' must be of class 'datacube...'.", type = 3)
-  }
-
-  # load: query and subsetting done by datacube
-  if(method == "load"){
-    ds <- do.call(dc$load, query)
-
-    # return xarray python object
-    if(return_class == "xarray"){
-      return(ds)
-    }
-
-    # return converted stars object
-    if(return_class == "stars"){
-      .xarray_convert(ds)
-    }
-  }
-
-  # find_datasets: create a proxy/vrt stack instead of loading
-  if(method == "find_datasets"){
-
-    # get paths
-    .dc_find_datasets(dc, query)
-
-    ###### ADD METHOD TO DEAL WITH PATHS HERE #######
-
-  }
-}
+# #' @importFrom sf st_crs st_set_crs
+# #' @importFrom stars read_stars st_set_dimensions
+# #'
+# #' @keywords internal
+# #' @noRd
+# .dc_query <- function(dc, query, method = "find_datasets", return_class = "stars"){
+#
+#   if(!any(grepl("datacube.api.core.Datacube", class(dc)))){
+#     out("'dc' must be of class 'datacube...'.", type = 3)
+#   }
+#
+#   # load: query and subsetting done by datacube
+#   if(method == "load"){
+#     ds <- do.call(dc$load, query)
+#
+#     # return xarray python object
+#     if(return_class == "xarray"){
+#       return(ds)
+#     }
+#
+#     # return converted stars object
+#     if(return_class == "stars"){
+#       .xarray_convert(ds)
+#     }
+#   }
+#
+#   # find_datasets: create a proxy/vrt stack instead of loading
+#   if(method == "find_datasets"){
+#
+#     # get paths
+#     dc_find_datasets(dc, query)
+#
+#     ###### ADD METHOD TO DEAL WITH PATHS HERE #######
+#
+#   }
+# }
 
 # global reference to datacube
 datacube <- NULL
@@ -149,4 +138,5 @@ np <- NULL
   datacube <<- reticulate::import("datacube", delay_load = TRUE)
   np <<- reticulate::import("numpy", delay_load = TRUE)
 
+  options(odcr.dc = NA)
 }

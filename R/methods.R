@@ -34,7 +34,11 @@
 #' @keywords internal
 #' @noRd
 .dim <- function(ds) {
-  x <- gsub("'", "", strsplit(gsub("\\}\\)\\)", "", strsplit(as.character(ds$sizes), "\\{")[[1]][2]), ",")[[1]])
+  x <- gsub("'", "", strsplit(strsplit(as.character(ds$sizes), "\\{")[[1]][2], ",")[[1]])
+  x <- sapply(x, function(.x){
+    gsub("\\)", "", gsub("\\}", "", .x))
+  }, USE.NAMES = F)
+
   dims <- unlist(lapply(x, function(.x) as.numeric(strsplit(.x, ": ")[[1]][2])))
   names(dims) <- unlist(lapply(x, function(.x) trimws(strsplit(.x, ": ")[[1]][1])))
   dims <- dims[order(names(dims))]
@@ -70,15 +74,17 @@ dim.xarray.core.dataarray.DataArray <- .dim
 #' plot method
 #' @noRd
 #' @export
-plot.xarray.core.dataset.Dataset <- function(ds) {
+plot.xarray.core.dataset.Dataset <- function(ds, ...) {
   plot(.xarray_convert(ds))
 }
 
 #' plot method
 #' @noRd
 #' @export
-plot.xarray.core.dataarray.DataArray <- function(ds) {
-  plot(.xarray_convert(ds), main = ds$name)
+plot.xarray.core.dataarray.DataArray <- function(ds, ...) {
+  arg <- list(...)
+  if(is.null(arg$main)) arg$main <- ds$name
+  do.call(plot, c(list(x = .xarray_convert(ds)), arg))
 }
 
 #' add method
@@ -108,5 +114,3 @@ plot.xarray.core.dataarray.DataArray <- function(ds) {
 "*.xarray.core.dataarray.DataArray" <- function(xds, yds) {
   np$multiply(xds, yds)
 }
-
-
