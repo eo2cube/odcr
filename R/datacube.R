@@ -83,3 +83,4 @@ dc_load <- function(dc = getOption("odcr.dc"), query){
   ds <- do.call(dc$load, query)
   return(ds)
 }
+

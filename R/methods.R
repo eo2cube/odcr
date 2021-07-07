@@ -114,3 +114,69 @@ plot.xarray.core.dataarray.DataArray <- function(ds, ...) {
 "*.xarray.core.dataarray.DataArray" <- function(xds, yds) {
   np$multiply(xds, yds)
 }
+
+#' "xarray.core.dataset.Dataset" class
+#'
+#' @name xarray.core.dataset.Dataset-class
+#' @aliases xarray.core.dataset.Dataset
+#' @family xarray.core.dataset.Dataset
+#'
+#' @exportClass xarray.core.dataset.Dataset
+setOldClass("xarray.core.dataset.Dataset")
+
+#' Methods to coerce \code{odcr} classes to native spatial classes
+#' @name as
+#' @rdname coerce-methods
+#' @aliases coerce,xarray.core.dataset.Dataset,stars-method.
+#' @exportMethod coerce
+setAs("xarray.core.dataset.Dataset", "stars", function(from) as.stars(from))
+
+
+#' "xarray.core.dataarray.DataArray" class
+#'
+#' @name xarray.core.dataarray.DataArray-class
+#' @aliases xarray.core.dataarray.DataArray
+#' @family xarray.core.dataarray.DataArray
+#'
+#' @exportClass xarray.core.dataarray.DataArray
+setOldClass("xarray.core.dataarray.DataArray")
+
+#' Methods to coerce \code{odcr} classes to native spatial classes
+#' @name as
+#' @rdname coerce-methods
+#' @aliases coerce,xarray.core.dataarray.DataArray,stars-method.
+#' @exportMethod coerce
+setAs("xarray.core.dataarray.DataArray", "stars", function(from) as.stars(from))
+
+#' Methods to coerce \code{odcr} classes to native spatial classes
+#'
+#' [as.stars()] allows to convert `xarray.core.dataset.Dataset` to `stars`.
+#'
+#' @rdname coerce-methods
+#' @name as.stars
+#' @md
+#'
+#' @param from object of class `xarray.core.dataset.Dataset`
+#'
+#' @return [as.stars()] retruns an object of class `stars`
+#' @export
+as.stars <- function(from){
+  .xarray_convert(from, method = "stars")
+}
+
+#' Methods to coerce \code{odcr} classes to native spatial classes
+#'
+#' [as.raster()] allows to convert `xarray.core.dataset.Dataset` to `RasterLayer` or `RasterStack`.
+#'
+#' @rdname coerce-methods
+#' @name as.raster
+#' @md
+#'
+#' @param from object of class `xarray.core.dataset.Dataset`
+#'
+#' @return [as.raster()] retruns an object of class `RasterLayer` or `RasterStack`
+#' @export
+as.raster <- function(from){
+  .xarray_convert(from, method = "raster")
+}
+

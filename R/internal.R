@@ -83,13 +83,27 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   ds$to_netcdf(path = filename, format = "NETCDF4")
 
   # load values from xarray
-  if(method == "stars"){
+  if(any(method == "stars", method == "raster")){
     x <- read_stars(filename, quiet = T)
     x <- st_set_crs(x, as.numeric(ds$spatial_ref$values)) # THIS MIGHT BE BREAKING IF THERE IS NO EPSG VALUE AS CRS!
     x <- st_set_dimensions(x, "band", names = "time")
-    #names(x) <- gsub("X..", "", names(x))
-    return(x)
   }
+
+  if(method == "raster"){
+    ds_names <- names(x)
+    out(ds_names)
+    if(length(ds_names) > 1){
+      out("Raster* cannot represent four dimensions, only three. Coercing to a list of Raster* instead.", type = 2)
+      x <- lapply(1:length(ds_names), function(i){
+        as(x[i], "Raster")
+      })
+      names(x) <- ds_names
+    } else{
+      x <- as(x, "Raster")
+    }
+  }
+
+  return(x)
 }
 
 # #' @importFrom sf st_crs st_set_crs
