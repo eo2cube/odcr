@@ -45,41 +45,100 @@
   return(dims)
 }
 
-#' @noRd
-#' @export
-"[[.xarray.core.dataset.Dataset" <- .index_var
-
-#' @noRd
-#' @export
-"[[.xarray.core.dataarray.DataArray" <- function(ds) return(ds)
-
-#' @noRd
+#' @title Methods to extract from \code{odcr} classes
+#'
+#' @description `[` allows to subset an `xarray` object by its dimensions (see [`dim()`])
+#'
+#' @name Extract
+#' @md
+#'
+#' @param i numeric, first dimension index
+#' @param j numeric, second dimension index
+#' @param k numeric, third dimension index
+#'
+#' @return Subsetted `xarray` object
 #' @export
 "[.xarray.core.dataset.Dataset" <- .index_dim
 
-#' @noRd
+#' @rdname Extract
 #' @export
 "[.xarray.core.dataarray.DataArray" <- .index_dim
 
-#' dim method
-#' @noRd
+
+#' @description `[[` allows to subset an `xarray` object by measurements/variables (e.g. spectral band), either named (character) or indexed (numeric).
+#'
+#' @rdname Extract
+#' @md
+#'
+#' @param ... numeric or character, index or indices by which to extract (additional) elements
+#'
+#' @export
+"[[.xarray.core.dataset.Dataset" <- .index_var
+
+#' @rdname Extract
+#' @export
+"[[.xarray.core.dataarray.DataArray" <- function(ds, ...) return(ds)
+
+#' @description `xar_sel_time()` allows to subset an `xarray` object by a character vector of dates/times.
+#' @rdname Extract
+#' @md
+#'
+#' @param ds `xarray` object, the dataset to be subsetted
+#' @param query character vector, one or more time/date character vectors in the format of the time dimension of `ds` or an abbreviated form of it (e.g. only the date component)
+#' @param exact_match logical, whether to return only exact matches (default) or to search for closest elements to each element in `query` using `[difftime()]`
+#'
+#' @export
+xar_sel_time <- function(ds, query, exact_match = T){
+  x <- ds$time$values
+  if(isTRUE(exact_match)){
+    subs <- sapply(query, function(.q) which(grepl(.q, x)), USE.NAMES = F)
+    if(length(subs) == 0) out("Query times are not matching ds times.", type = 3)
+    ds$sel(time = x[subs])
+  }else{
+    subs <- sapply(as.POSIXct(query), function(.q) which.min(abs(difftime(.q, as.POSIXct(x)))))
+    ds$sel(time = x[subs])
+  }
+}
+
+
+
+#' Dimensions of \code{odcr} classes
+#'
+#' `dim()` retrieves dimensions from an `xarray` object.
+#'
+#' @name dim
+#' @md
+#'
+#' @param ds dataset of which dimensions should be retrieved.
+#'
+#' @return a (named) vector
 #' @export
 dim.xarray.core.dataset.Dataset <- .dim
 
 #' dim method
-#' @noRd
+#' @rdname dim
 #' @export
 dim.xarray.core.dataarray.DataArray <- .dim
 
-#' plot method
-#' @noRd
+
+#' Plotting of \code{odcr} classes
+#'
+#' `plot()` plots an `xarray` object using `[stars::plot()]`
+#'
+#' @name plot
+#' @md
+#'
+#' @param ds dataset of which should be plotted
+#' @param ... additional arguments passed to `[stars::plot()]`
+#'
+#' @return a starsplot
 #' @export
 plot.xarray.core.dataset.Dataset <- function(ds, ...) {
-  plot(.xarray_convert(ds))
+  plot(.xarray_convert(ds), ...)
 }
 
 #' plot method
-#' @noRd
+#' @rdname plot
 #' @export
 plot.xarray.core.dataarray.DataArray <- function(ds, ...) {
   arg <- list(...)
@@ -87,29 +146,36 @@ plot.xarray.core.dataarray.DataArray <- function(ds, ...) {
   do.call(plot, c(list(x = .xarray_convert(ds)), arg))
 }
 
-#' add method
-#' @noRd
+
+#' @title Arithmetic operators for \code{odcr} classes
+#'
+#' @description These arithmetic operators perform arithmetic on two objects of the same class, shape and dimensions.
+#'
+#' @name Arithmetic
+#' @md
+#'
+#' @param xds  `xarray` object
+#' @param yds `xarray` object
+#'
+#' @return An `xarray` object of same class, shape and dimensions as the inputs to the operator, holding the result.
 #' @export
 "+.xarray.core.dataarray.DataArray" <- function(xds, yds) {
   np$add(xds, yds)
 }
 
-#' substract method
-#' @noRd
+#' @rdname Arithmetic
 #' @export
 "-.xarray.core.dataarray.DataArray" <- function(xds, yds) {
   np$subtract(xds, yds)
 }
 
-#' divide method
-#' @noRd
+#' @rdname Arithmetic
 #' @export
 "/.xarray.core.dataarray.DataArray" <- function(xds, yds) {
   np$divide(xds, yds)
 }
 
-#' divide method
-#' @noRd
+#' @rdname Arithmetic
 #' @export
 "*.xarray.core.dataarray.DataArray" <- function(xds, yds) {
   np$multiply(xds, yds)
@@ -166,7 +232,7 @@ as.stars <- function(from){
 
 #' Methods to coerce \code{odcr} classes to native spatial classes
 #'
-#' [as.raster()] allows to convert `xarray.core.dataset.Dataset` to `RasterLayer` or `RasterStack`.
+#' [as.raster()] allows to convert `xarray.core.dataset.Dataset` to `RasterLayer` or `RasterBrick`.
 #'
 #' @rdname coerce-methods
 #' @name as.raster
@@ -174,7 +240,7 @@ as.stars <- function(from){
 #'
 #' @param from object of class `xarray.core.dataset.Dataset`
 #'
-#' @return [as.raster()] retruns an object of class `RasterLayer` or `RasterStack`
+#' @return [as.raster()] retruns an object of class `RasterLayer` or `RasterBrick` or a `list` of such in case of more than 3 dimensions
 #' @export
 as.raster <- function(from){
   .xarray_convert(from, method = "raster")
