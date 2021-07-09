@@ -1,5 +1,11 @@
 # `odcr`
 
+<!-- badges: start -->
+[![CRAN version](https://www.r-pkg.org/badges/version/odcr)](https://CRAN.R-project.org/package=odcr)
+[![R-CMD-check](https://github.com/eo2cube/odcr/workflows/R-CMD-check/badge.svg)](https://github.com/eo2cube/odcr/actions)
+[![Package dependencies](https://tinyverse.netlify.com/badge/odcr)](https://CRAN.R-project.org/package=odcr)
+<!-- badges: end -->
+
 `odcr` is an R package that serves as an interface to the *Open Data Cube*. As such, it facilitates interaction with an *Open Data Cube* instance to access, query, list and load data as a native `xarray`-equivalent class. It implements basic methods to subset/index, plot and execute basic arithmetic operations on data and convert to native spatial raster classes such as `stars` or `raster`.
 
 ## Features
