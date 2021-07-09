@@ -59,47 +59,48 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
 
 # get measurements from dataset
 #' @keywords internal
+#' @importFrom utils tail
 #' @noRd
-.get_measurements <- function(ds){
-  unlist(lapply(tail(strsplit(as.character(ds$data_vars), ".\n")[[1]], n=-1), function(x) trimws(strsplit(x, "\\(")[[1]][1])))
+.get_measurements <- function(x){
+  unlist(lapply(tail(strsplit(as.character(x$data_vars), ".\n")[[1]], n=-1), function(.x) trimws(strsplit(.x, "\\(")[[1]][1])))
 }
 
 
 #' @importFrom sf st_crs st_set_crs
 #' @importFrom stars read_stars st_set_dimensions
+#' @importFrom methods as
 #'
 #' @keywords internal
 #' @noRd
-.xarray_convert <- function(ds, filename = tempfile(fileext = ".ncdf"), method = "stars"){
+.xarray_convert <- function(x, filename = tempfile(fileext = ".ncdf"), method = "stars"){
 
-  if(!any(grepl("xarray", class(ds)))){
-    out("'ds' must be of class 'xarray...'.", type = 3)
+  if(!any(grepl("xarray", class(x)))){
+    out("'x' must be of class 'xarray...'.", type = 3)
   }
 
   # delete ncdf conflicting attribute
-  try(ds$time$attrs$units <- NULL, silent = T)
+  try(x$time$attrs$units <- NULL, silent = T)
 
-  # write ds to ncdf
-  ds$to_netcdf(path = filename, format = "NETCDF4")
+  # write x to ncdf
+  x$to_netcdf(path = filename, format = "NETCDF4")
 
   # load values from xarray
   if(any(method == "stars", method == "raster")){
-    x <- read_stars(filename, quiet = T)
-    x <- st_set_crs(x, as.numeric(ds$spatial_ref$values)) # THIS MIGHT BE BREAKING IF THERE IS NO EPSG VALUE AS CRS!
-    x <- st_set_dimensions(x, "band", names = "time")
+    y <- read_stars(filename, quiet = T)
+    y <- st_set_crs(y, as.numeric(x$spatial_ref$values)) # THIS MIGHT BE BREAKING IF THERE IS NO EPSG VALUE AS CRS!
+    y <- st_set_dimensions(y, "band", names = "time")
   }
 
   if(method == "raster"){
-    ds_names <- names(x)
-    out(ds_names)
-    if(length(ds_names) > 1){
+    y_names <- names(y)
+    if(length(y_names) > 1){
       out("Raster* cannot represent four dimensions, only three. Coercing to a list of Raster* instead.", type = 2)
-      x <- lapply(1:length(ds_names), function(i){
-        as(x[i], "Raster")
+      y <- lapply(1:length(y_names), function(i){
+        as(y[i], "Raster")
       })
-      names(x) <- ds_names
+      names(y) <- y_names
     } else{
-      x <- as(x, "Raster")
+      y <- as(y, "Raster")
     }
   }
 

@@ -13,7 +13,7 @@
 #'    \item \code{'resolution'}, numeric vector of length == 2
 #'    \item \code{'measurements'}, character vector containing the names or aliases of measurements
 #' }
-#' @param ... additional optional arguments.
+#' @param lazy logical, whether to use lazy dataset finding or not.
 #'
 #' @return
 #' None or \code{data.frame}

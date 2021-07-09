@@ -2,22 +2,22 @@
 #' @importFrom reticulate py_get_item
 #' @keywords internal
 #' @noRd
-.index_var <- function(ds, ...) {
+.index_var <- function(x, ...) {
   i <- list(...)[[1]]
 
   if(is.numeric(i)){
-    i <- .get_measurements(ds)[i]
+    i <- .get_measurements(x)[i]
   }
-  return(py_get_item(ds, i))
+  return(py_get_item(x, i))
 }
 
 #' select dim with this method
 #' @keywords internal
 #' @noRd
-.index_dim <- function(ds, i = NULL, j = NULL, k = NULL, ...) {
+.index_dim <- function(x, i = NULL, j = NULL, k = NULL, ...) {
   index <- c(list(i, j, k), list(...))
 
-  dims <- dim(ds)
+  dims <- dim(x)
   if(length(index) != length(dims)) out("Number of dimensions of object differ from provided index.", type = 3)
   names(index) <- names(dims)
   index <- index[!sapply(index, is.null)]
@@ -27,14 +27,14 @@
 
   # check out of bounds! currently on the Python side
 
-  do.call(ds$isel, index)
+  do.call(x$isel, index)
 }
 
 #' get dimensions
 #' @keywords internal
 #' @noRd
-.dim <- function(ds) {
-  x <- gsub("'", "", strsplit(strsplit(as.character(ds$sizes), "\\{")[[1]][2], ",")[[1]])
+.dim <- function(x) {
+  x <- gsub("'", "", strsplit(strsplit(as.character(x$sizes), "\\{")[[1]][2], ",")[[1]])
   x <- sapply(x, function(.x){
     gsub("\\)", "", gsub("\\}", "", .x))
   }, USE.NAMES = F)
@@ -77,31 +77,31 @@
 
 #' @rdname Extract
 #' @export
-"[[.xarray.core.dataarray.DataArray" <- function(ds, ...) return(ds)
+"[[.xarray.core.dataarray.DataArray" <- function(x, ...) return(x)
 
 #' @description `xar_sel_time()` allows to subset an `xarray` object by a character vector of dates/times.
 #' @rdname Extract
 #' @md
 #'
-#' @param ds `xarray` object, the dataset to be subsetted
-#' @param query character vector, one or more time/date character vectors in the format of the time dimension of `ds` or an abbreviated form of it (e.g. only the date component)
+#' @param x `xarray` object, the dataset to be subsetted
+#' @param query character vector, one or more time/date character vectors in the format of the time dimension of `x` or an abbreviated form of it (e.g. only the date component)
 #' @param exact_match logical, whether to return only exact matches (default) or to search for closest elements to each element in `query` using `[difftime()]`
 #'
 #' @export
-xar_sel_time <- function(ds, query, exact_match = T){
-  x <- ds$time$values
+xar_sel_time <- function(x, query, exact_match = T){
+  v <- x$time$values
   if(isTRUE(exact_match)){
-    subs <- sapply(query, function(.q) which(grepl(.q, x)), USE.NAMES = F)
-    if(length(subs) == 0) out("Query times are not matching ds times.", type = 3)
+    subs <- sapply(query, function(.q) which(grepl(.q, v)), USE.NAMES = F)
+    if(length(subs) == 0) out("Query times are not matching times of x.", type = 3)
     subs_l <- sapply(subs, length)
-    if(all(subs_l == 0)) out("Query times are not matching ds times.", type = 3)
-    if(any(subs_l == 0)) out("Some query times are not matching ds times, subsetting only by valid times.", type = 2)
+    if(all(subs_l == 0)) out("Query times are not matching times of x.", type = 3)
+    if(any(subs_l == 0)) out("Some query times are not matching times of x, subsetting only by valid times.", type = 2)
     subs <- unlist(subs)
-    ds$sel(time = x[subs])
+    x$sel(time = v[subs])
   }else{
-    subs <- sapply(as.POSIXct(query), function(.q) which.min(abs(difftime(.q, as.POSIXct(x)))))
-    if(any(duplicated(subs))) out("Output contains duplicated times, since some query times are closest to the same ds times.", type = 2)
-    ds$sel(time = x[subs])
+    subs <- sapply(as.POSIXct(query), function(.q) which.min(abs(difftime(.q, as.POSIXct(v)))))
+    if(any(duplicated(subs))) out("Output contains duplicated times, since some query times are closest to the same times of x.", type = 2)
+    x$sel(time = v[subs])
   }
 }
 
@@ -114,7 +114,7 @@ xar_sel_time <- function(ds, query, exact_match = T){
 #' @name dim
 #' @md
 #'
-#' @param ds dataset of which dimensions should be retrieved.
+#' @param x object of which dimensions should be retrieved.
 #'
 #' @return a (named) vector
 #' @export
@@ -133,22 +133,22 @@ dim.xarray.core.dataarray.DataArray <- .dim
 #' @name plot
 #' @md
 #'
-#' @param ds dataset of which should be plotted
-#' @param ... additional arguments passed to `[stars::plot()]`
+#' @param x object which should be plotted
+#' @param ... additional arguments passed to [`stars::plot()`]
 #'
-#' @return a starsplot
+#' @return a `stars` plot
 #' @export
-plot.xarray.core.dataset.Dataset <- function(ds, ...) {
-  plot(.xarray_convert(ds), ...)
+plot.xarray.core.dataset.Dataset <- function(x, ...) {
+  plot(.xarray_convert(x), ...)
 }
 
 #' plot method
 #' @rdname plot
 #' @export
-plot.xarray.core.dataarray.DataArray <- function(ds, ...) {
+plot.xarray.core.dataarray.DataArray <- function(x, ...) {
   arg <- list(...)
-  if(is.null(arg$main)) arg$main <- ds$name
-  do.call(plot, c(list(x = .xarray_convert(ds)), arg))
+  if(is.null(arg$main)) arg$main <- x$name
+  do.call(plot, c(list(x = .xarray_convert(x)), arg))
 }
 
 
@@ -192,6 +192,7 @@ plot.xarray.core.dataarray.DataArray <- function(ds, ...) {
 #' @aliases xarray.core.dataset.Dataset
 #' @family xarray.core.dataset.Dataset
 #'
+#' @importFrom methods setOldClass
 #' @exportClass xarray.core.dataset.Dataset
 setOldClass("xarray.core.dataset.Dataset")
 
@@ -199,7 +200,8 @@ setOldClass("xarray.core.dataset.Dataset")
 #' @name as
 #' @rdname coerce-methods
 #' @aliases coerce,xarray.core.dataset.Dataset,stars-method.
-#' @exportMethod coerce
+#'
+#' @importFrom methods setAs
 setAs("xarray.core.dataset.Dataset", "stars", function(from) as.stars(from))
 
 
@@ -209,6 +211,7 @@ setAs("xarray.core.dataset.Dataset", "stars", function(from) as.stars(from))
 #' @aliases xarray.core.dataarray.DataArray
 #' @family xarray.core.dataarray.DataArray
 #'
+#' @importFrom methods setOldClass
 #' @exportClass xarray.core.dataarray.DataArray
 setOldClass("xarray.core.dataarray.DataArray")
 
@@ -216,7 +219,8 @@ setOldClass("xarray.core.dataarray.DataArray")
 #' @name as
 #' @rdname coerce-methods
 #' @aliases coerce,xarray.core.dataarray.DataArray,stars-method.
-#' @exportMethod coerce
+#'
+#' @importFrom methods setAs
 setAs("xarray.core.dataarray.DataArray", "stars", function(from) as.stars(from))
 
 #' Methods to coerce \code{odcr} classes to native spatial classes
@@ -246,6 +250,8 @@ as.stars <- function(from){
 #' @param from object of class `xarray.core.dataset.Dataset`
 #'
 #' @return [as.raster()] retruns an object of class `RasterLayer` or `RasterBrick` or a `list` of such in case of more than 3 dimensions
+#'
+#' @importFrom utils installed.packages
 #' @export
 as.raster <- function(from){
   if(!any("raster" == installed.packages())) out("Package 'raster' must be installed to convert to 'Raster*'", type = 3)
