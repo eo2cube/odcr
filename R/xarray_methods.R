@@ -248,6 +248,7 @@ as.stars <- function(from){
 #' @return [as.raster()] retruns an object of class `RasterLayer` or `RasterBrick` or a `list` of such in case of more than 3 dimensions
 #' @export
 as.raster <- function(from){
+  if(!any("raster" == installed.packages())) out("Package 'raster' must be installed to convert to 'Raster*'", type = 3)
   .xarray_convert(from, method = "raster")
 }
 
