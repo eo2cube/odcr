@@ -93,9 +93,14 @@ xar_sel_time <- function(ds, query, exact_match = T){
   if(isTRUE(exact_match)){
     subs <- sapply(query, function(.q) which(grepl(.q, x)), USE.NAMES = F)
     if(length(subs) == 0) out("Query times are not matching ds times.", type = 3)
+    subs_l <- sapply(subs, length)
+    if(all(subs_l == 0)) out("Query times are not matching ds times.", type = 3)
+    if(any(subs_l == 0)) out("Some query times are not matching ds times, subsetting only by valid times.", type = 2)
+    subs <- unlist(subs)
     ds$sel(time = x[subs])
   }else{
     subs <- sapply(as.POSIXct(query), function(.q) which.min(abs(difftime(.q, as.POSIXct(x)))))
+    if(any(duplicated(subs))) out("Output contains duplicated times, since some query times are closest to the same ds times.", type = 2)
     ds$sel(time = x[subs])
   }
 }
