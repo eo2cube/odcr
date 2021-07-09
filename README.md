@@ -1,6 +1,6 @@
 # `odcr`
 
-`odcr` is an R package that serves as an interface to the `Open Data Cube`. As such, it facilitates interaction with an `Open Data Cube` instance to access, query, list and load data as a native `xarray`-equivalent class. It implements basic methods to subset/index, plot and execute basic arithmetic operations on data and convert to native spatial raster classes such as `stars` or `raster`.
+`odcr` is an R package that serves as an interface to the *Open Data Cube*. As such, it facilitates interaction with an *Open Data Cube* instance to access, query, list and load data as a native `xarray`-equivalent class. It implements basic methods to subset/index, plot and execute basic arithmetic operations on data and convert to native spatial raster classes such as `stars` or `raster`.
 
 ## Features
 
