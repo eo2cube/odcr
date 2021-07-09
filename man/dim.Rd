@@ -6,12 +6,12 @@
 \alias{dim.xarray.core.dataarray.DataArray}
 \title{Dimensions of \code{odcr} classes}
 \usage{
-\method{dim}{xarray.core.dataset.Dataset}(ds)
+\method{dim}{xarray.core.dataset.Dataset}(x)
 
-\method{dim}{xarray.core.dataarray.DataArray}(ds)
+\method{dim}{xarray.core.dataarray.DataArray}(x)
 }
 \arguments{
-\item{ds}{dataset of which dimensions should be retrieved.}
+\item{x}{object of which dimensions should be retrieved.}
 }
 \value{
 a (named) vector

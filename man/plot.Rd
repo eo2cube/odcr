@@ -6,12 +6,12 @@
 \alias{plot.xarray.core.dataarray.DataArray}
 \title{Plotting of \code{odcr} classes}
 \usage{
-\method{plot}{xarray.core.dataset.Dataset}(ds, ...)
+\method{plot}{xarray.core.dataset.Dataset}(x, ...)
 
-\method{plot}{xarray.core.dataarray.DataArray}(ds, ...)
+\method{plot}{xarray.core.dataarray.DataArray}(x, ...)
 }
 \arguments{
-\item{ds}{dataset of which should be plotted}
+\item{x}{object which should be plotted}
 
 \item{...}{additional arguments passed to \verb{[stars::plot()]}}
 }

@@ -9,18 +9,18 @@
 \alias{xar_sel_time}
 \title{Methods to extract from \code{odcr} classes}
 \usage{
-\method{[}{xarray.core.dataset.Dataset}(ds, i = NULL, j = NULL, k = NULL, ...)
+\method{[}{xarray.core.dataset.Dataset}(x, i = NULL, j = NULL, k = NULL, ...)
 
-\method{[}{xarray.core.dataarray.DataArray}(ds, i = NULL, j = NULL, k = NULL, ...)
+\method{[}{xarray.core.dataarray.DataArray}(x, i = NULL, j = NULL, k = NULL, ...)
 
-\method{[[}{xarray.core.dataset.Dataset}(ds, ...)
+\method{[[}{xarray.core.dataset.Dataset}(x, ...)
 
-\method{[[}{xarray.core.dataarray.DataArray}(ds, ...)
+\method{[[}{xarray.core.dataarray.DataArray}(x, ...)
 
-xar_sel_time(ds, query, exact_match = T)
+xar_sel_time(x, query, exact_match = T)
 }
 \arguments{
-\item{ds}{\code{xarray} object, the dataset to be subsetted}
+\item{x}{\code{xarray} object, the dataset to be subsetted}
 
 \item{i}{numeric, first dimension index}
 
@@ -30,7 +30,7 @@ xar_sel_time(ds, query, exact_match = T)
 
 \item{...}{numeric or character, index or indices by which to extract (additional) elements}
 
-\item{query}{character vector, one or more time/date character vectors in the format of the time dimension of \code{ds} or an abbreviated form of it (e.g. only the date component)}
+\item{query}{character vector, one or more time/date character vectors in the format of the time dimension of \code{x} or an abbreviated form of it (e.g. only the date component)}
 
 \item{exact_match}{logical, whether to return only exact matches (default) or to search for closest elements to each element in \code{query} using \verb{[difftime()]}}
 }

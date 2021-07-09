@@ -33,7 +33,7 @@ dc_load(dc = getOption("odcr.dc"), query)
    \item \code{'measurements'}, character vector containing the names or aliases of measurements
 }}
 
-\item{...}{additional optional arguments.}
+\item{lazy}{logical, whether to use lazy dataset finding or not.}
 }
 \value{
 None or \code{data.frame}
