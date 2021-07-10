@@ -44,3 +44,48 @@ Subsetted \code{xarray} object
 
 \code{xar_sel_time()} allows to subset an \code{xarray} object by a character vector of dates/times.
 }
+\examples{
+\dontrun{
+library(odcr)
+
+# connect to a database, store the Daatcube connection internally (default and recommended)
+database_connect(app = "Sentinel_2")
+
+# build a query list
+lat <- 22.821
+lon <- 28.518
+buffer <- 0.05
+
+query <- list(
+  'time' = c('2020-01', '2020-03'),
+  'x' = c(lon - buffer, lon + buffer),
+  'y' = c(lat + buffer, lat - buffer),
+  'output_crs' = 'epsg:6933',
+  'resolution' = c(-20,20)
+)
+
+# load data and return an xarray object for a query
+ds <- dc_load(query = c(product = "s2_l2a", dask_chunks = dict(), query))
+
+# return dimensions of ds
+dim(ds)
+
+# subset/index ds by time, x, y
+ds[13, 11:20, 21:30]
+
+# subset/index ds by time
+ds[13,,]
+
+# subset/index ds by variable/measurement
+ds[[2]]
+
+# or do the same with a named variable or alias
+ds[["nir"]]
+
+# subset/index by exact time vectors
+xar_sel_time(ds, c("2020-01-02", "2020-01-07"))
+
+# or find closest times/date subsets by time vectors
+xar_sel_time(ds, c("2020-01-01", "2020-01-07"), exact_match = F)
+}
+}

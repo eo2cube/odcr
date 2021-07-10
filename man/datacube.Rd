@@ -41,3 +41,40 @@ None or \code{data.frame}
 \description{
 These functions query a datacube to which a connection has been established using \code{\link{database_connect}}.
 }
+\examples{
+\dontrun{
+library(odcr)
+
+# connect to a database
+database_connect(app = "Sentinel_2")
+
+# return a data.frame containing all stored variables/measurements of the current connection
+# and its aliases, data types etc.
+dc_list_measurements()
+
+# return a data.frame containing all products of the current connection
+dc_list_products()
+
+# build a query list
+lat <- 22.821
+lon <- 28.518
+buffer <- 0.05
+
+query <- list(
+  'time' = c('2020-01', '2020-03'),
+  'x' = c(lon - buffer, lon + buffer),
+  'y' = c(lat + buffer, lat - buffer),
+  'output_crs' = 'epsg:6933',
+  'resolution' = c(-20,20)
+)
+
+# return a data.frame of all datasets matching the query
+dc_find_datasets(query = c(product = "s2_l2a", query))
+
+# load data and return an xarray object for a query
+ds <- dc_load(query = c(product = "s2_l2a", dask_chunks = dict(), query))
+
+# after a lot of queries, you may want to close open connections
+dc_close()
+}
+}
