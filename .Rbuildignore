@@ -1,2 +1,11 @@
-^odcr\.Rproj$
+^.*\.Rproj$
 ^\.Rproj\.user$
+^LICENSE$
+^\.travis.yml$
+^\.gitignore$
+^\.Rhistory$
+^cran-comments\.md$
+^appveyor\.yml$
+^_pkgdown\.yml$
+docs
+^\.github$
