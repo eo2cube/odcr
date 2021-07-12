@@ -8,7 +8,7 @@
 #' @return
 #' None
 #'
-#' @importFrom reticulate py_config import
+#' @importFrom reticulate use_python py_config import
 #' @examples
 #' \dontrun{
 #' library(odcr)
@@ -19,13 +19,14 @@
 #' @name config
 config <- function(python = NA){
   if(!is.na(python)){
-    Sys.setenv(RETICULATE_PYTHON = python)
+    #Sys.setenv(RETICULATE_PYTHON = python)
+    use_python(python, required = T)
   }
-  out("'odcr' is using the following python configuration:")
+  out("'odcr' is using the following python configuration:\n")
   print(py_config())
 
   tryCatch({
     dc <- import("datacube")
   }, error = function(e) out("Python library 'datacube' cannot be loaded, is your Python configuration correct?", type = 3),
-  finally = out("Python library 'datacube' is available, 'odcr' configuration successfull."))
+  finally = out("\nPython library 'datacube' is available, 'odcr' configuration successfull."))
 }
