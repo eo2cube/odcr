@@ -26,9 +26,9 @@ config <- function(python = NA){
   print(py_config())
   cat("\n")
 
-  dc <- try(import("datacube"))
+  dc <- try(import("datacube"), silent = T)
 
-  if(inherits(ds, "try-error")){
+  if(inherits(dc, "try-error")){
     out("Python library 'datacube' cannot be loaded. Is odcr using the correct Python installation? Is 'datacube' installed and working? Are its upstream dependencies installed?", type = 3)
   } else{
     out("Python library 'datacube' is available, 'odcr' configuration successfull.")
