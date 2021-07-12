@@ -8,7 +8,7 @@
 
 `odcr` is an R package that serves as an interface to the *Open Data Cube*. As such, it facilitates interaction with an *Open Data Cube* instance to access, query, list and load data as a native `xarray`-equivalent class. It implements basic methods to subset/index, plot and execute basic arithmetic operations on data and convert to native spatial raster classes such as `stars` or `raster`.
 
-## Features
+## Features (in development)
 
 - [x] basic database connection (see `?odcr::database`)
 - [x] `datacube` core `Datacube` class methods (see `?odcr::datacube`)
@@ -27,8 +27,15 @@
 - [x] `xarray` native S3 methods for coercing to native spatial classes `raster*` and `stars` (see `?odcr::as`)
 - [x] `xarray` native S3 methods for plotting (see `?odcr::plot`)
 - [ ] unit tests (unsolved questions regarding how to integrate reticulate pointers etc.)
+- [ ] connfiguration (`odcr::database_config`)
 - [ ] ...
 
+
+## System requirements
+
+`odcr` requires the *Open Data Cube* Python library `datacube` which needs to be installed as part of a working *Open Data Cube* installation. See [eo2cube_box](https://github.com/eo2cube/eo2cube_box), if you want to install and set-up an `Open Data Cube` container environment that meets all `odcr` system requirements "out-of-the-box".
+
+In case you have multiple Python installations or (virtual) environments installed, use `odcr::config` to make sure that `odcr` is using the correct Python installation and environment so that it can load and interact the `datacube` library.
 
 ## Installation
 
@@ -40,16 +47,10 @@ devtools::install_github("eo2cube/odcr")
 
 ## Build instructions
 
-In case you want to build the package manually, clone the repository and `cd` to its main directory. `odcr` uses `roxygen2` for documentation. To build manuals, run:
+In case you want to build the package manually, clone the repository and `cd` to its main directory. `odcr` uses `roxygen2` for documentation. Make sure, `devtools`, `roxygen2` and `pkgdown` are installed. Run:
 
 ```R
-devtools::document()
-```
-
-To build and install the package, run:
-
-```R
-devtools::install()
+source("build.R")
 ```
 
 ## Get Started

@@ -74,9 +74,9 @@
 <!-- badges: start -->
 
 <p><code>odcr</code> is an R package that serves as an interface to the <em>Open Data Cube</em>. As such, it facilitates interaction with an <em>Open Data Cube</em> instance to access, query, list and load data as a native <code>xarray</code>-equivalent class. It implements basic methods to subset/index, plot and execute basic arithmetic operations on data and convert to native spatial raster classes such as <code>stars</code> or <code>raster</code>.</p>
-<div id="features" class="section level2">
+<div id="features-in-development" class="section level2">
 <h2 class="hasAnchor">
-<a href="#features" class="anchor"></a>Features</h2>
+<a href="#features-in-development" class="anchor"></a>Features (in development)</h2>
 <ul class="task-list">
 <li>
 <input type="checkbox" disabled checked>
@@ -119,8 +119,17 @@ support for native proxy class for streaming values directly (such as <code>star
 unit tests (unsolved questions regarding how to integrate reticulate pointers etc.)</li>
 <li>
 <input type="checkbox" disabled>
+connfiguration (<code>odcr::database_config</code>)</li>
+<li>
+<input type="checkbox" disabled>
 …</li>
 </ul>
+</div>
+<div id="system-requirements" class="section level2">
+<h2 class="hasAnchor">
+<a href="#system-requirements" class="anchor"></a>System requirements</h2>
+<p><code>odcr</code> requires the <em>Open Data Cube</em> Python library <code>datacube</code> which needs to be installed as part of a working <em>Open Data Cube</em> installation. See <a href="https://github.com/eo2cube/eo2cube_box">eo2cube_box</a>, if you want to install and set-up an <code>Open Data Cube</code> container environment that meets all <code>odcr</code> system requirements “out-of-the-box”.</p>
+<p>In case you have multiple Python installations or (virtual) environments installed, use <code><a href="reference/config.html">odcr::config</a></code> to make sure that <code>odcr</code> is using the correct Python installation and environment so that it can load and interact the <code>datacube</code> library.</p>
 </div>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
@@ -132,12 +141,9 @@ unit tests (unsolved questions regarding how to integrate reticulate pointers et
 <div id="build-instructions" class="section level2">
 <h2 class="hasAnchor">
 <a href="#build-instructions" class="anchor"></a>Build instructions</h2>
-<p>In case you want to build the package manually, clone the repository and <code>cd</code> to its main directory. <code>odcr</code> uses <code>roxygen2</code> for documentation. To build manuals, run:</p>
+<p>In case you want to build the package manually, clone the repository and <code>cd</code> to its main directory. <code>odcr</code> uses <code>roxygen2</code> for documentation. Make sure, <code>devtools</code>, <code>roxygen2</code> and <code>pkgdown</code> are installed. Run:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/document.html">document</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<p>To build and install the package, run:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/install.html">install</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/source.html">source</a></span><span class="op">(</span><span class="st">"build.R"</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="get-started" class="section level2">
 <h2 class="hasAnchor">
