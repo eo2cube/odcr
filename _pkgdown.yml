@@ -1,0 +1,10 @@
+url: https://eo2cube.github.io/basemaps
+
+development:
+  mode: devel
+
+home:
+  links:
+  - text: Find out more about our work
+    href: https://datacube.remote-sensing.org/
+
