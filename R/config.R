@@ -24,9 +24,13 @@ config <- function(python = NA){
   }
   out("'odcr' is using the following python configuration:\n")
   print(py_config())
+  cat("\n")
 
-  tryCatch({
-    dc <- import("datacube")
-  }, error = function(e) out("Python library 'datacube' cannot be loaded, is your Python configuration correct?", type = 3),
-  finally = out("\nPython library 'datacube' is available, 'odcr' configuration successfull."))
+  dc <- try(import("datacube"))
+
+  if(inherits(ds, "try-error")){
+    out("Python library 'datacube' cannot be loaded. Is odcr using the correct Python installation? Is 'datacube' installed and working? Are its upstream dependencies installed?", type = 3)
+  } else{
+    out("Python library 'datacube' is available, 'odcr' configuration successfull.")
+  }
 }
