@@ -154,4 +154,5 @@ np <- NULL
   np <<- reticulate::import("numpy", delay_load = TRUE)
 
   options(odcr.dc = NA)
+  options(odcr.verbose = TRUE)
 }

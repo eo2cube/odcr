@@ -22,7 +22,7 @@ config <- function(python = NA){
     Sys.setenv(RETICULATE_PYTHON = python)
   }
   out("'odcr' is using the following python configuration:")
-  py_config()
+  print(py_config())
 
   tryCatch({
     dc <- import("datacube")
