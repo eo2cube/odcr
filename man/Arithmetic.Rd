@@ -27,3 +27,31 @@ An \code{xarray} object of same class, shape and dimensions as the inputs to the
 \description{
 These arithmetic operators perform arithmetic on two objects of the same class, shape and dimensions.
 }
+\examples{
+\dontrun{
+library(odcr)
+
+# connect to a database, store the Daatcube connection internally (default and recommended)
+database_connect(app = "Sentinel_2")
+
+# build a query list
+lat <- 22.821
+lon <- 28.518
+buffer <- 0.05
+
+query <- list(
+  'time' = c('2020-01', '2020-03'),
+  'x' = c(lon - buffer, lon + buffer),
+  'y' = c(lat + buffer, lat - buffer),
+  'output_crs' = 'epsg:6933',
+  'resolution' = c(-20,20)
+)
+
+# load data and return an xarray object for a query
+ds <- dc_load(query = c(product = "s2_l2a", dask_chunks = dict(), query))
+
+ndvi <- (ds[["nir"]] - ds[["red"]]) / (ds[["nir"]] + ds[["red"]])
+ndvi
+
+}
+}

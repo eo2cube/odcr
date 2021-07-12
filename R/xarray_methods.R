@@ -234,7 +234,10 @@ dim.xarray.core.dataarray.DataArray <- .dim
 #' ds <- dc_load(query = c(product = "s2_l2a", dask_chunks = dict(), query))
 #'
 #' # plot first timestamp, spatial subset and only first band/variable
-#' plot(ds[1,100:300,100:300][[1]])
+#' plot(ds[1,101:300,101:300][[1]])
+#'
+#' # plot first timestamp, spatial subset and only two bands/variables
+#' plot(ds[1,101:300,101:300][[c(1,2)]])
 #' }
 #' @export
 plot.xarray.core.dataset.Dataset <- function(x, ...) {
@@ -262,6 +265,34 @@ plot.xarray.core.dataarray.DataArray <- function(x, ...) {
 #' @param yds `xarray` object
 #'
 #' @return An `xarray` object of same class, shape and dimensions as the inputs to the operator, holding the result.
+#'
+#' @examples
+#' \dontrun{
+#' library(odcr)
+#'
+#' # connect to a database, store the Daatcube connection internally (default and recommended)
+#' database_connect(app = "Sentinel_2")
+#'
+#' # build a query list
+#' lat <- 22.821
+#' lon <- 28.518
+#' buffer <- 0.05
+#'
+#' query <- list(
+#'   'time' = c('2020-01', '2020-03'),
+#'   'x' = c(lon - buffer, lon + buffer),
+#'   'y' = c(lat + buffer, lat - buffer),
+#'   'output_crs' = 'epsg:6933',
+#'   'resolution' = c(-20,20)
+#' )
+#'
+#' # load data and return an xarray object for a query
+#' ds <- dc_load(query = c(product = "s2_l2a", dask_chunks = dict(), query))
+#'
+#' ndvi <- (ds[["nir"]] - ds[["red"]]) / (ds[["nir"]] + ds[["red"]])
+#' ndvi
+#'
+#' }
 #' @export
 "+.xarray.core.dataarray.DataArray" <- function(xds, yds) {
   np$add(xds, yds)
@@ -333,6 +364,53 @@ setAs("xarray.core.dataarray.DataArray", "stars", function(from) as.stars(from))
 #' @param from object of class `xarray.core.dataset.Dataset`
 #'
 #' @return [as.stars()] retruns an object of class `stars`
+#'
+#' @examples
+#' \dontrun{
+#' #' library(odcr)
+#'
+#' # connect to a database, store the Daatcube connection internally (default and recommended)
+#' database_connect(app = "Sentinel_2")
+#'
+#' # build a query list
+#' lat <- 22.821
+#' lon <- 28.518
+#' buffer <- 0.05
+#'
+#' query <- list(
+#'   'time' = c('2020-01', '2020-03'),
+#'   'x' = c(lon - buffer, lon + buffer),
+#'   'y' = c(lat + buffer, lat - buffer),
+#'   'output_crs' = 'epsg:6933',
+#'   'resolution' = c(-20,20)
+#' )
+#'
+#' # load data and return an xarray object for a query
+#' ds <- dc_load(query = c(product = "s2_l2a", dask_chunks = dict(), query))
+#' ds <- ds[,101:300,101:300]
+#'
+#' # convert to stars (multi-dimensional and mulit-varariable)
+#' ds_stars <- as.stars(ds)
+#' ds_stars <- as(ds, "stars")
+#'
+#' # convert to stars (single variable)
+#' ds_stars <- as.stars(ds[[1]])
+#'
+#' # convert to stars (2-dim, multi-variable)
+#' ds_stars <- as.stars(ds[1,,])
+#'
+#' # convert to raster (multi-dimensional and mulit-varariable)
+#' ds_raster <- as.raster(ds)
+#' ds_raster <- as(ds, "raster")
+#' # raster cannot represent 4-dim objects, thus coereced to list of RasterBricks
+#'
+#' # convert to starasterrs (single variable)
+#' ds_raster <- as.raster(ds[[1]])
+#'
+#' # convert to raster (2-dim, multi-variable)
+#' ds_raster <- as.raster(ds[1,,])
+#' }
+#'
 #' @export
 as.stars <- function(from){
   .xarray_convert(from, method = "stars")

@@ -45,6 +45,6 @@ query <- list(
 ds <- dc_load(query = c(product = "s2_l2a", dask_chunks = dict(), query))
 
 # plot first timestamp, spatial subset and only first band/variable
-plot(ds[1,100:300,100:300][[1]])
+plot(ds[1,101:300,101:300][[1]])
 }
 }
