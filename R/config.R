@@ -20,7 +20,7 @@
 config <- function(python = NA){
   if(!is.na(python)){
     #Sys.setenv(RETICULATE_PYTHON = python)
-    use_python(python, required = T)
+    use_python(python)
   }
   out("'odcr' is using the following python configuration:\n")
   print(py_config())
