@@ -1,9 +1,9 @@
 Package: odcr
 Title: Accessing the Open Data Cube from R
-Version: 0.0.1
+Version: 0.0.1-5
 Depends:
   R (>= 3.5.0)
-Date: 2021-06-21
+Date: 2021-07-12
 Authors@R: person("Jakob", "Schwalb-Willmann", email = "dev@schwalb-willmann.de",
   role = c("aut", "cre"), comment = c(ORCID = "0000-0003-2665-1509"))
 Description: An R interface to the Open Data Cube.
@@ -17,5 +17,5 @@ Imports:
   utils
 Suggests:
   raster
-BugReports: https://github.com/16eagle/odcr/issues
+BugReports: https://github.com/eo2cube/odcr/issues
 RoxygenNote: 7.1.1
