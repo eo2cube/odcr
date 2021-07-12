@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://eo2cube.github.io/basemaps/index.html</loc>
+  </url>
+  <url>
+    <loc>https://eo2cube.github.io/basemaps/reference/Arithmetic.html</loc>
+  </url>
+  <url>
+    <loc>https://eo2cube.github.io/basemaps/reference/Extract.html</loc>
+  </url>
+  <url>
+    <loc>https://eo2cube.github.io/basemaps/reference/coerce-methods.html</loc>
+  </url>
+  <url>
+    <loc>https://eo2cube.github.io/basemaps/reference/database.html</loc>
+  </url>
+  <url>
+    <loc>https://eo2cube.github.io/basemaps/reference/datacube.html</loc>
+  </url>
+  <url>
+    <loc>https://eo2cube.github.io/basemaps/reference/dim.html</loc>
+  </url>
+  <url>
+    <loc>https://eo2cube.github.io/basemaps/reference/plot.html</loc>
+  </url>
+  <url>
+    <loc>https://eo2cube.github.io/basemaps/reference/xarray.core.dataarray.DataArray-class.html</loc>
+  </url>
+  <url>
+    <loc>https://eo2cube.github.io/basemaps/reference/xarray.core.dataset.Dataset-class.html</loc>
+  </url>
+</urlset>

@@ -27,7 +27,7 @@ as.raster(from)
 }
 \examples{
 \dontrun{
-#' library(odcr)
+library(odcr)
 
 # connect to a database, store the Daatcube connection internally (default and recommended)
 database_connect(app = "Sentinel_2")
@@ -47,7 +47,7 @@ query <- list(
 
 # load data and return an xarray object for a query
 ds <- dc_load(query = c(product = "s2_l2a", dask_chunks = dict(), query))
-ds <- [,101:300,101:300]
+ds <- ds[,101:300,101:300]
 
 # convert to stars (multi-dimensional and mulit-varariable)
 ds_stars <- as.stars(ds)
@@ -70,4 +70,5 @@ ds_raster <- as.raster(ds[[1]])
 # convert to raster (2-dim, multi-variable)
 ds_raster <- as.raster(ds[1,,])
 }
+
 }

@@ -367,7 +367,7 @@ setAs("xarray.core.dataarray.DataArray", "stars", function(from) as.stars(from))
 #'
 #' @examples
 #' \dontrun{
-#' #' library(odcr)
+#' library(odcr)
 #'
 #' # connect to a database, store the Daatcube connection internally (default and recommended)
 #' database_connect(app = "Sentinel_2")
