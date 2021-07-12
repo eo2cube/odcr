@@ -117,7 +117,7 @@
     <p>This function configures <code>odcr</code> to connect with the correct Python environment and check the availability of the <code>datacube</code> Python library.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>config</span><span class='op'>(</span>python <span class='op'>=</span> <span class='cn'>NA</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>config</span><span class='op'>(</span>python <span class='op'>=</span> <span class='cn'>NA</span>, required <span class='op'>=</span> <span class='cn'>T</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -125,6 +125,10 @@
     <tr>
       <th>python</th>
       <td><p>character, path to a python or conda executable that should be used by <code>odcr</code>. Note that the selected Python environment must have the <code>datacube</code> library installed (and its upstream Python and system dependencies must be available).</p></td>
+    </tr>
+    <tr>
+      <th>required</th>
+      <td><p>logical, whether the use of this python install should be forced even if major libraries are missing or not</p></td>
     </tr>
     </table>
 

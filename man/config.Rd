@@ -4,10 +4,12 @@
 \alias{config}
 \title{Configure \code{odcr}}
 \usage{
-config(python = NA)
+config(python = NA, required = T)
 }
 \arguments{
 \item{python}{character, path to a python or conda executable that should be used by \code{odcr}. Note that the selected Python environment must have the \code{datacube} library installed (and its upstream Python and system dependencies must be available).}
+
+\item{required}{logical, whether the use of this python install should be forced even if major libraries are missing or not}
 }
 \value{
 None

@@ -3,6 +3,7 @@
 #' This function configures `odcr` to connect with the correct Python environment and check the availability of the `datacube` Python library.
 #'
 #' @param python character, path to a python or conda executable that should be used by `odcr`. Note that the selected Python environment must have the `datacube` library installed (and its upstream Python and system dependencies must be available).
+#' @param required logical, whether the use of this python install should be forced even if major libraries are missing or not
 #' @md
 #'
 #' @return
@@ -17,10 +18,10 @@
 #' }
 #' @export
 #' @name config
-config <- function(python = NA){
+config <- function(python = NA, required = T){
   if(!is.na(python)){
     #Sys.setenv(RETICULATE_PYTHON = python)
-    use_python(python)
+    use_python(python, required)
   }
   out("'odcr' is using the following python configuration:\n")
   print(py_config())
