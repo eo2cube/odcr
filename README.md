@@ -27,15 +27,15 @@
 - [x] `xarray` native S3 methods for coercing to native spatial classes `raster*` and `stars` (see `?odcr::as`)
 - [x] `xarray` native S3 methods for plotting (see `?odcr::plot`)
 - [ ] unit tests (unsolved questions regarding how to integrate reticulate pointers etc.)
-- [ ] connfiguration (`odcr::database_config`)
+- [x] configuration (see `?odcr::config`)
 - [ ] ...
 
 
 ## System requirements
 
-`odcr` requires the *Open Data Cube* Python library `datacube` which needs to be installed as part of a working *Open Data Cube* installation. See [eo2cube_box](https://github.com/eo2cube/eo2cube_box), if you want to install and set-up an `Open Data Cube` container environment that meets all `odcr` system requirements "out-of-the-box".
+`odcr` requires the *Open Data Cube* Python library `datacube` which needs to be installed as part of a working *Open Data Cube* installation. See [eo2cube_box](https://github.com/eo2cube/eo2cube_box), if you want to install and set-up an *Open Data Cube* container environment that meets all `odcr` system requirements "out-of-the-box".
 
-In case you have multiple Python installations or (virtual) environments installed, use `odcr::config` to make sure that `odcr` is using the correct Python installation and environment so that it can load and interact the `datacube` library.
+In case you have multiple Python installations or (virtual) environments installed, use `odcr::config` to make sure that `odcr` is using the correct Python installation and environment so that it can load and interact with the `datacube` library.
 
 ## Installation
 
