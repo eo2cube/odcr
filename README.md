@@ -33,7 +33,7 @@
 
 ## System requirements
 
-`odcr` requires the *Open Data Cube* Python library `datacube` which needs to be installed as part of a working *Open Data Cube* installation. See [eo2cube_box](https://github.com/eo2cube/eo2cube_box), if you want to install and set-up an *Open Data Cube* container environment that meets all `odcr` system requirements "out-of-the-box".
+`odcr` requires the *Open Data Cube* Python library `datacube` which needs to be installed as part of a working *Open Data Cube* installation. See [odcbox](https://github.com/eo2cube/odcbox), if you want to install and set-up an *Open Data Cube* container environment that meets all `odcr` system requirements "out-of-the-box".
 
 In case you have multiple Python installations or (virtual) environments installed, use `odcr::config` to make sure that `odcr` is using the correct Python installation and environment so that it can load and interact with the `datacube` library.
 
@@ -55,7 +55,7 @@ source("build.R")
 
 ## Get Started
 
-*Examples to be added*
+See the vignette *Using odcr* for a full introduction on how to use `odcr` with Sentinel-2 example data.
 
 ## List of functions and methods
 

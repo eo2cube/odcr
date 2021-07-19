@@ -16,6 +16,9 @@ Imports:
   methods,
   utils
 Suggests:
-  raster
+    rmarkdown,
+    knitr,
+    raster
 BugReports: https://github.com/eo2cube/odcr/issues
 RoxygenNote: 7.1.1
+VignetteBuilder: knitr
