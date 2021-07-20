@@ -1,7 +1,7 @@
-url: https://eo2cube.github.io/basemaps
+url: https://eo2cube.github.io/odcr
 
 development:
-  mode: devel
+  mode: release
 
 home:
   links:
