@@ -6,7 +6,7 @@
 [![Package dependencies](https://tinyverse.netlify.com/badge/odcr)](https://CRAN.R-project.org/package=odcr)
 <!-- badges: end -->
 
-`odcr` is an R package that serves as an interface to the *Open Data Cube*. As such, it facilitates interaction with an *Open Data Cube* instance to access, query, list and load data as a native `xarray`-equivalent class. It implements basic methods to subset/index, plot and execute basic arithmetic operations on data and convert to native spatial raster classes such as `stars` or `raster`.
+`odcr` is an R package that serves as a simple interface to the *Open Data Cube*. As such, it facilitates interaction with an *Open Data Cube* instance to access, query, list and load data as a native `xarray`-equivalent class. It implements basic methods to subset/index, plot and execute basic arithmetic operations on data and convert to native spatial raster classes such as `stars` or `raster`.
 
 ## Features (in development)
 
@@ -26,7 +26,7 @@
 - [x] `xarray` native S3 methods for arithmetic operators (see `?odcr::Arithmetic`)
 - [x] `xarray` native S3 methods for coercing to native spatial classes `raster*` and `stars` (see `?odcr::as`)
 - [x] `xarray` native S3 methods for plotting (see `?odcr::plot`)
-- [ ] unit tests (unsolved questions regarding how to integrate reticulate pointers etc.)
+- [ ] unit tests
 - [x] configuration (see `?odcr::config`)
 - [ ] ...
 
@@ -55,11 +55,11 @@ source("build.R")
 
 ## Get Started
 
-See the vignette *Using odcr* for a full introduction on how to use `odcr` with Sentinel-2 example data.
+See the vignette [*Using odcr*](https://eo2cube.github.io/odcr/articles/using_odcr.html) for a full introduction on how to use `odcr` with Sentinel-2 example data. Documentation and examples are available at [https://eo2cube.github.io/odcr/](https://eo2cube.github.io/odcr/).
 
 ## List of functions and methods
 
-*Function list to be added*, see package index.
+See [the package index](https://eo2cube.github.io/odcr/reference/index.html).
 
 
 

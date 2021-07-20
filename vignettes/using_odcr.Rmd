@@ -1,8 +1,8 @@
 ---
-title: "Using odcr"
+title: "Get started with odcr"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Using odcr}
+  %\VignetteIndexEntry{Get started with odcr}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -29,6 +29,17 @@ Install and load the `odcr` package. Use the function `config` to make sure that
 devtools::install_github("eo2cube/odcr")
 library(odcr)
 ```
+
+    
+    Attaching package: ‘odcr’
+    
+    
+    The following object is masked from ‘package:grDevices’:
+    
+        as.raster
+    
+    
+
 
 
 ```R
@@ -107,7 +118,7 @@ dc_list_products()
 <table class="dataframe">
 <caption>A data.frame: 1 × 17</caption>
 <thead>
-	<tr><th></th><th scope=col>name</th><th scope=col>description</th><th scope=col>lat</th><th scope=col>format</th><th scope=col>region_code</th><th scope=col>instrument</th><th scope=col>lon</th><th scope=col>platform</th><th scope=col>label</th><th scope=col>dataset_maturity</th><th scope=col>time</th><th scope=col>product_family</th><th scope=col>creation_time</th><th scope=col>crs</th><th scope=col>resolution</th><th scope=col>tile_size</th><th scope=col>spatial_dimensions</th></tr>
+	<tr><th></th><th scope=col>name</th><th scope=col>description</th><th scope=col>time</th><th scope=col>label</th><th scope=col>product_family</th><th scope=col>instrument</th><th scope=col>platform</th><th scope=col>lon</th><th scope=col>dataset_maturity</th><th scope=col>format</th><th scope=col>lat</th><th scope=col>region_code</th><th scope=col>creation_time</th><th scope=col>crs</th><th scope=col>resolution</th><th scope=col>tile_size</th><th scope=col>spatial_dimensions</th></tr>
 	<tr><th></th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;list&gt;</th><th scope=col>&lt;list&gt;</th><th scope=col>&lt;list&gt;</th><th scope=col>&lt;list&gt;</th><th scope=col>&lt;list&gt;</th><th scope=col>&lt;list&gt;</th><th scope=col>&lt;list&gt;</th><th scope=col>&lt;list&gt;</th><th scope=col>&lt;list&gt;</th><th scope=col>&lt;list&gt;</th><th scope=col>&lt;list&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
 </thead>
 <tbody>
@@ -581,6 +592,18 @@ ndvi_stars <- as.stars(ndvi)
 ndvi_stars
 ```
 
+
+    stars object with 3 dimensions and 1 attribute
+    attribute(s), summary of first 1e+05 cells:
+                         Min.    1st Qu.     Median      Mean    3rd Qu.     Max.
+    file60619f88df.ncdf     0 0.06856548 0.07989854 0.1686233 0.09137056 12.83542
+    dimension(s):
+         from  to offset delta                       refsys point values x/y
+    x       1 483      0     1 WGS 84 / NSIDC EASE-Grid ...    NA   NULL [x]
+    y       1 590    590    -1 WGS 84 / NSIDC EASE-Grid ...    NA   NULL [y]
+    time    1  19     NA    NA                           NA    NA   NULL    
+
+
 Coercing to `Raster*` works the same way. Note that `raster` cannot represent objects with more than 3 dimensions. Coercing four-dimensional `xarray`s into `raster` will thus result in a list of `RasterBricks`.
 
 
@@ -589,8 +612,54 @@ ds_raster <- as.raster(ds[1:3,100:199, 100:199])
 ds_raster
 ```
 
+    Warning message:
+    “Raster* cannot represent four dimensions, only three. Coercing to a list of Raster* instead.”
+
+
+
+    $X..nir
+    class      : RasterBrick 
+    dimensions : 100, 100, 10000, 3  (nrow, ncol, ncell, nlayers)
+    resolution : 1, 1  (x, y)
+    extent     : 0, 100, 0, 100  (xmin, xmax, ymin, ymax)
+    crs        : +proj=cea +lat_ts=30 +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs 
+    source     : memory
+    names      : layer.1, layer.2, layer.3 
+    min values :    1908,    1560,    1944 
+    max values :    7836,    6792,    6812 
+    time       : 1, 2, 3 
+    
+    
+    $X..red
+    class      : RasterBrick 
+    dimensions : 100, 100, 10000, 3  (nrow, ncol, ncell, nlayers)
+    resolution : 1, 1  (x, y)
+    extent     : 0, 100, 0, 100  (xmin, xmax, ymin, ymax)
+    crs        : +proj=cea +lat_ts=30 +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs 
+    source     : memory
+    names      : layer.1, layer.2, layer.3 
+    min values :       1,       1,     400 
+    max values :    6504,    5660,    5672 
+    time       : 1, 2, 3 
+    
+
+
+
 
 ```R
 ds_ndvi <- as.raster(ndvi)
 ds_ndvi
 ```
+
+
+    class      : RasterBrick 
+    dimensions : 590, 483, 284970, 19  (nrow, ncol, ncell, nlayers)
+    resolution : 1, 1  (x, y)
+    extent     : 0, 483, 0, 590  (xmin, xmax, ymin, ymax)
+    crs        : +proj=cea +lat_ts=30 +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs 
+    source     : memory
+    names      :      layer.1,      layer.2,      layer.3,      layer.4,      layer.5,      layer.6,      layer.7,      layer.8,      layer.9,     layer.10,     layer.11,     layer.12,     layer.13,     layer.14,     layer.15, ... 
+    min values : 0.0000000000, 0.0086058520, 0.0043975374, 0.0000000000, 0.0000000000, 0.0007936508, 0.0075885329, 0.0085470085, 0.0163934426, 0.0000000000, 0.0019755038, 0.0004014452, 0.0093043864, 0.0052539405, 0.0044516390, ... 
+    max values :   26.1693291,    7.8564547,    7.4154195,   77.3010753,    8.1431421,    8.6615466,    7.7234043,    7.5000000,    7.7845567,    8.4730849,    7.7010163,    7.6560300,    7.9392319,    7.7875030,    7.7730412, ... 
+    time       : 1, 19 (min, max)
+
