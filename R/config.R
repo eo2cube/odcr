@@ -2,7 +2,7 @@
 #'
 #' This function configures `odcr` to connect with the correct Python environment and check the availability of the `datacube` Python library.
 #'
-#' @param python character, path to a python or conda executable that should be used by `odcr`. Note that the selected Python environment must have the `datacube` library installed (and its upstream Python and system dependencies must be available).
+#' @param python character, path to a python or conda binary/environment that should be used by `odcr`. Note that the selected Python environment must have the `datacube` library installed (and its upstream Python and system dependencies must be available). To set up a datacube environment ready for Pyhton and R 'out of the box', please see [eo2cube's odcbox](https://github.com/eo2cube/odcbox).
 #' @param required logical, whether the use of this python install should be forced even if major libraries are missing or not
 #' @md
 #'
@@ -30,8 +30,9 @@ config <- function(python = NA, required = T){
   dc <- try(import("datacube"), silent = T)
 
   if(inherits(dc, "try-error")){
-    out("Python library 'datacube' cannot be loaded. Is odcr using the correct Python installation? Is 'datacube' installed and working? Are its upstream dependencies installed?", type = 3)
+    out("Python library 'datacube' cannot be loaded. Did you specify the correct Python binary/environment? Is the 'datacube' module installed for this Python binary/environment and working? Are its upstream dependencies installed? To set up a datacube environment ready for Pyhton and R 'out of the box', please see https://github.com/eo2cube/odcbox", type = 3)
   } else{
-    out("Python library 'datacube' is available, 'odcr' configuration successfull.")
+    v <- dc$"__version__"
+    out(paste0("Linking to datacube ", v, ", 'odcr' configuration successfull."))
   }
 }
