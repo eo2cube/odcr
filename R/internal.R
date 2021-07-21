@@ -149,23 +149,31 @@ datacube <- NULL
 np <- NULL
 
 
-#' @importFrom reticulate import py_module_available
+#' @importFrom reticulate import
 #' @keywords internal
 #' @noRd
 .onLoad <- function(libname, pkgname) {
-  # use superassignment to update global reference to scipy
+  # use superassignment to update global references
   datacube <<- import("datacube", delay_load = TRUE)
   np <<- import("numpy", delay_load = TRUE)
 
   options(odcr.dc = NA)
   options(odcr.verbose = TRUE)
 
-  if(!py_module_available("datacube")){
+  dc <- try(import("datacube"), silent = T)
+  if(inherits(dc, "try-error")){
     m <- "Could not auto-link to datacube, please use odcr::config() to link to the correct python binary/environment that has the datacube module installed."
   } else{
-    v <- datacube$"__version__"
+    v <- dc$"__version__"
     m <- paste0("Linking to datacube ", v)
   }
+
+  # if(!py_module_available("datacube")){
+  #   m <- "Could not auto-link to datacube, please use odcr::config() to link to the correct python binary/environment that has the datacube module installed."
+  # } else{
+  #   #v <- datacube$"__version__"
+  #   m <- paste0("Linking to datacube") # ", v)
+  # }
 
   packageStartupMessage(m)
 }
