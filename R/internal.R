@@ -107,42 +107,21 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   return(y)
 }
 
-# #' @importFrom sf st_crs st_set_crs
-# #' @importFrom stars read_stars st_set_dimensions
-# #'
-# #' @keywords internal
-# #' @noRd
-# .dc_query <- function(dc, query, method = "find_datasets", return_class = "stars"){
-#
-#   if(!any(grepl("datacube.api.core.Datacube", class(dc)))){
-#     out("'dc' must be of class 'datacube...'.", type = 3)
-#   }
-#
-#   # load: query and subsetting done by datacube
-#   if(method == "load"){
-#     ds <- do.call(dc$load, query)
-#
-#     # return xarray python object
-#     if(return_class == "xarray"){
-#       return(ds)
-#     }
-#
-#     # return converted stars object
-#     if(return_class == "stars"){
-#       .xarray_convert(ds)
-#     }
-#   }
-#
-#   # find_datasets: create a proxy/vrt stack instead of loading
-#   if(method == "find_datasets"){
-#
-#     # get paths
-#     dc_find_datasets(dc, query)
-#
-#     ###### ADD METHOD TO DEAL WITH PATHS HERE #######
-#
-#   }
-# }
+#' @importFrom reticulate import
+#' @keywords internal
+#' @noRd
+.dc_available <- function(){
+  dc <- try(import("datacube"), silent = T)
+  if(inherits(dc, "try-error")) FALSE else TRUE
+}
+
+#' @importFrom reticulate import
+#' @keywords internal
+#' @noRd
+.dc_version <- function(){
+  dc <- try(import("datacube"), silent = T)
+  if(!inherits(dc, "try-error")) dc$"__version__" else ""
+}
 
 # global reference to datacube
 datacube <- NULL
@@ -153,27 +132,23 @@ np <- NULL
 #' @keywords internal
 #' @noRd
 .onLoad <- function(libname, pkgname) {
+  Sys.setenv(RETICULATE_MINICONDA_ENABLED=FALSE)
+
   # use superassignment to update global references
-  datacube <<- import("datacube", delay_load = TRUE)
-  np <<- import("numpy", delay_load = TRUE)
+  datacube <<- reticulate::import("datacube", delay_load = TRUE)
+  np <<- reticulate::import("numpy", delay_load = TRUE)
 
   options(odcr.dc = NA)
   options(odcr.verbose = TRUE)
+}
 
-  dc <- try(import("datacube"), silent = T)
-  if(inherits(dc, "try-error")){
-    m <- "Could not auto-link to datacube, please use odcr::config() to link to the correct python binary/environment that has the datacube module installed."
+#' @keywords internal
+#' @noRd
+.onAttach = function(libname, pkgname) {
+  if(.dc_available()){
+    m <- paste0("Linking to datacube ", .dc_version())
   } else{
-    v <- dc$"__version__"
-    m <- paste0("Linking to datacube ", v)
+    m <- "Could not auto-link to datacube, please use odcr::config() to link to the correct python binary/environment that has the datacube module installed."
   }
-
-  # if(!py_module_available("datacube")){
-  #   m <- "Could not auto-link to datacube, please use odcr::config() to link to the correct python binary/environment that has the datacube module installed."
-  # } else{
-  #   #v <- datacube$"__version__"
-  #   m <- paste0("Linking to datacube") # ", v)
-  # }
-
   packageStartupMessage(m)
 }
