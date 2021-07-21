@@ -103,7 +103,7 @@ jobs:
 
       - name: "[macOS] grant miniconda user rights"
         if: runner.os == 'macOS'
-        run: sudo chown 501:20 /usr/local/miniconda/pkgs/cache/b89cf7bf.json
+        run: sudo chown -R 501:20 /usr/local/miniconda/pkgs/cache/
 
       - name: Check
         env:
