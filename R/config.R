@@ -27,12 +27,9 @@ config <- function(python = NA, required = T){
   print(py_config())
   cat("\n")
 
-  dc <- try(import("datacube"), silent = T)
-
-  if(inherits(dc, "try-error")){
-    out("Python library 'datacube' cannot be loaded. Did you specify the correct Python binary/environment? Is the 'datacube' module installed for this Python binary/environment and working? Are its upstream dependencies installed? To set up a datacube environment ready for Pyhton and R 'out of the box', please see https://github.com/eo2cube/odcbox", type = 3)
+  if(.dc_available()){
+    out(paste0("Linking to datacube ", .dc_version(), ", 'odcr' configuration successfull."))
   } else{
-    v <- dc$"__version__"
-    out(paste0("Linking to datacube ", v, ", 'odcr' configuration successfull."))
+    out("Python library 'datacube' cannot be loaded. Did you specify the correct Python binary/environment? Is the 'datacube' module installed for this Python binary/environment and working? Are its upstream dependencies installed? To set up a datacube environment ready for Pyhton and R 'out of the box', please see https://github.com/eo2cube/odcbox", type = 3)
   }
 }
