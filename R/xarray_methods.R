@@ -1,14 +1,31 @@
+#' convert index into name
+#' @keywords internal
+#' @noRd
+.index2name <- function(x, ...){
+  i <- list(...)[[1]]
+  if(is.numeric(i)){
+    i <- .get_measurements(x)[i]
+  }
+  return(i)
+}
+
 #' select var with this method
 #' @importFrom reticulate py_get_item
 #' @keywords internal
 #' @noRd
 .index_var <- function(x, ...) {
-  i <- list(...)[[1]]
-
-  if(is.numeric(i)){
-    i <- .get_measurements(x)[i]
-  }
+  i <- .index2name(x, ...)
   return(py_get_item(x, i))
+}
+
+#' assign/set var with this method
+#' @importFrom reticulate py_set_item
+#' @keywords internal
+#' @noRd
+.set_var <- function(x, ..., value){
+  i <- .index2name(x, ...)
+  py_set_item(x, i, value)
+  return(x)
 }
 
 #' select dim with this method
@@ -45,7 +62,7 @@
   return(dims)
 }
 
-#' @title Methods to extract from \code{odcr} classes
+#' @title Methods to extract from or assign to \code{odcr} classes
 #'
 #' @description `[` allows to subset an `xarray` object by its dimensions (see [`dim()`])
 #'
@@ -115,7 +132,7 @@
 #' @rdname Extract
 #' @md
 #'
-#' @param ... numeric or character, index or indices by which to extract (additional) elements
+#' @param ... numeric or character, index or indices by which to extract/assign (additional) elements
 #'
 #' @export
 "[[.xarray.core.dataset.Dataset" <- .index_var
@@ -128,7 +145,7 @@
 #' @rdname Extract
 #' @md
 #'
-#' @param x `xarray` object, the dataset to be subsetted
+#' @param x `xarray` object, the dataset to be subsetted from or assigned to
 #' @param query character vector, one or more time/date character vectors in the format of the time dimension of `x` or an abbreviated form of it (e.g. only the date component)
 #' @param exact_match logical, whether to return only exact matches (default) or to search for closest elements to each element in `query` using `[difftime()]`
 #'
@@ -150,6 +167,19 @@ xar_sel_time <- function(x, query, exact_match = T){
   }
 }
 
+#' @description `[[<-` allows to assign a measurement/variable (e.g. spectral band), either named (character) or indexed (numeric), to an existing `xarray` object.
+#' @md
+#'
+#' @param value `xarray` object, the dataset that should be assigned to `x`
+#' @rdname Extract
+#'
+#' @export
+"[[<-.xarray.core.dataset.Dataset" <- .set_var
+
+#' @rdname Extract
+#'
+#' @export
+"$<-.xarray.core.dataset.Dataset" <- .set_var
 
 
 #' Dimensions of \code{odcr} classes
@@ -295,25 +325,29 @@ plot.xarray.core.dataarray.DataArray <- function(x, ...) {
 #' }
 #' @export
 "+.xarray.core.dataarray.DataArray" <- function(xds, yds) {
-  np$add(xds, yds)
+  y <- np$add(xds, yds)
+  .rm_attr(.rm_name(y), "units")
 }
 
 #' @rdname Arithmetic
 #' @export
 "-.xarray.core.dataarray.DataArray" <- function(xds, yds) {
-  np$subtract(xds, yds)
+  y <- np$subtract(xds, yds)
+  .rm_attr(.rm_name(y), "units")
 }
 
 #' @rdname Arithmetic
 #' @export
 "/.xarray.core.dataarray.DataArray" <- function(xds, yds) {
-  np$divide(xds, yds)
+  y <- np$divide(xds, yds)
+  .rm_attr(.rm_name(y), "units")
 }
 
 #' @rdname Arithmetic
 #' @export
 "*.xarray.core.dataarray.DataArray" <- function(xds, yds) {
-  np$multiply(xds, yds)
+  y <- np$multiply(xds, yds)
+  .rm_attr(.rm_name(y), "units")
 }
 
 #' "xarray.core.dataset.Dataset" class

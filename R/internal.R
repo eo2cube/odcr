@@ -107,6 +107,20 @@ out <- function(input, type = 1, ll = NULL, msg = FALSE, sign = "", verbose = ge
   return(y)
 }
 
+#' @keywords internal
+#' @noRd
+.rm_name <- function(x){
+  x$name <- NULL
+  x
+}
+
+#' @keywords internal
+#' @noRd
+.rm_attr <- function(x, attr){
+  x$attrs[[attr]] <- NULL
+  x
+}
+
 #' @importFrom reticulate import
 #' @keywords internal
 #' @noRd
