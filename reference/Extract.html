@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Methods to extract from odcr classes — Extract • odcr</title>
+<title>Methods to extract from or assign to odcr classes — Extract • odcr</title>
 
 
 <!-- jquery -->
@@ -39,10 +39,11 @@
 
 
 
-<meta property="og:title" content="Methods to extract from odcr classes — Extract" />
+<meta property="og:title" content="Methods to extract from or assign to odcr classes — Extract" />
 <meta property="og:description" content="[ allows to subset an xarray object by its dimensions (see dim())
 [[ allows to subset an xarray object by measurements/variables (e.g. spectral band), either named (character) or indexed (numeric).
-xar_sel_time() allows to subset an xarray object by a character vector of dates/times." />
+xar_sel_time() allows to subset an xarray object by a character vector of dates/times.
+[[&amp;lt;- allows to assign a measurement/variable (e.g. spectral band), either named (character) or indexed (numeric), to an existing xarray object." />
 
 
 
@@ -74,7 +75,7 @@ xar_sel_time() allows to subset an xarray object by a character vector of dates/
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">odcr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1-5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1-6</span>
       </span>
     </div>
 
@@ -122,7 +123,7 @@ xar_sel_time() allows to subset an xarray object by a character vector of dates/
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Methods to extract from <code>odcr</code> classes</h1>
+    <h1>Methods to extract from or assign to <code>odcr</code> classes</h1>
     <small class="dont-index">Source: <a href='https://github.com/eo2cube/odcr/blob/master/R/xarray_methods.R'><code>R/xarray_methods.R</code></a></small>
     <div class="hidden name"><code>Extract.Rd</code></div>
     </div>
@@ -131,6 +132,7 @@ xar_sel_time() allows to subset an xarray object by a character vector of dates/
     <p><code><a href='https://rdrr.io/r/base/Extract.html'>[</a></code> allows to subset an <code>xarray</code> object by its dimensions (see <code><a href='dim.html'>dim()</a></code>)</p>
 <p><code><a href='https://rdrr.io/r/base/Extract.html'>[[</a></code> allows to subset an <code>xarray</code> object by measurements/variables (e.g. spectral band), either named (character) or indexed (numeric).</p>
 <p><code>xar_sel_time()</code> allows to subset an <code>xarray</code> object by a character vector of dates/times.</p>
+<p><code>[[&lt;-</code> allows to assign a measurement/variable (e.g. spectral band), either named (character) or indexed (numeric), to an existing <code>xarray</code> object.</p>
     </div>
 
     <pre class="usage"># S3 method for xarray.core.dataset.Dataset
@@ -145,14 +147,20 @@ xar_sel_time() allows to subset an xarray object by a character vector of dates/
 # S3 method for xarray.core.dataarray.DataArray
 [[(x, ...)
 
-xar_sel_time(x, query, exact_match = T)</pre>
+xar_sel_time(x, query, exact_match = T)
+
+# S3 method for xarray.core.dataset.Dataset
+[[(x, ...) &lt;- value
+
+# S3 method for xarray.core.dataset.Dataset
+$(x, ...) &lt;- value</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p><code>xarray</code> object, the dataset to be subsetted</p></td>
+      <td><p><code>xarray</code> object, the dataset to be subsetted from or assigned to</p></td>
     </tr>
     <tr>
       <th>i</th>
@@ -168,7 +176,7 @@ xar_sel_time(x, query, exact_match = T)</pre>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>numeric or character, index or indices by which to extract (additional) elements</p></td>
+      <td><p>numeric or character, index or indices by which to extract/assign (additional) elements</p></td>
     </tr>
     <tr>
       <th>query</th>
@@ -177,6 +185,10 @@ xar_sel_time(x, query, exact_match = T)</pre>
     <tr>
       <th>exact_match</th>
       <td><p>logical, whether to return only exact matches (default) or to search for closest elements to each element in <code>query</code> using <code>[difftime()]</code></p></td>
+    </tr>
+    <tr>
+      <th>value</th>
+      <td><p><code>xarray</code> object, the dataset that should be assigned to <code>x</code></p></td>
     </tr>
     </table>
 
