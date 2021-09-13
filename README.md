@@ -23,6 +23,7 @@
 - [x] `xarray` native S3 methods for indexing by arbitrary number of dimensions (see `?odcr::Extract`)
 - [x] `xarray` native S3 methods for indexing by variable (see `?odcr::Extract`)
 - [x] `xarray` native S3 methods for indexing by time strings (see `?odcr::Extract`)
+- [x] `xarray` native S3 methods for assigning/replacing variables (see `?odcr::Extract`)
 - [x] `xarray` native S3 methods for arithmetic operators (see `?odcr::Arithmetic`)
 - [x] `xarray` native S3 methods for coercing to native spatial classes `raster*` and `stars` (see `?odcr::as`)
 - [x] `xarray` native S3 methods for plotting (see `?odcr::plot`)
