@@ -3,7 +3,7 @@ pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   using_odcr: using_odcr.html
-last_built: 2021-09-13T09:10Z
+last_built: 2021-09-14T10:20Z
 urls:
   reference: https://eo2cube.github.io/odcr/reference
   article: https://eo2cube.github.io/odcr/articles
