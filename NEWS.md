@@ -2,7 +2,7 @@
 
 ## 0.0.2 (in development)
 
-This release implements additional `xarray` features_
+This release implements additional `xarray` features.
 
 **Features:**
 
